@@ -6,7 +6,7 @@ BUILD_DIR = build
 
 all: $(BUILD_DIR)/test_sthread
 
-$(BUILD_DIR)/test_sthread: $(TEST_DIR)/test_sthread.c $(SRC_DIR)/sthread.c
+$(BUILD_DIR)/test_sthread: $(TEST_DIR)/test_sthread.c $(SRC_DIR)/sthread.c $(SRC_DIR)/dll.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ $^
 

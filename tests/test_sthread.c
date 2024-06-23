@@ -1,39 +1,36 @@
 #include "../datastruct/sthread.h"
 #include <stdio.h>
-#include <stdlib.h>
 
-void child_process() {
-    printf("Child process is running!\n");
+void child1() {
+    printf("Child 1: Start\n");
     sthr_yield();
-    printf("Child process resumed after yield!\n");
-    sthr_exit(EXIT_SUCCESS);
+    printf("Child 1: End\n");
+    sthr_exit(0);
+}
+
+void child2() {
+    printf("Child 2: Start\n");
+    sthr_yield();
+    printf("Child 2: End\n");
+    sthr_exit(0);
+}
+
+void parent() {
+    int status;
+    printf("Parent: Creating Child 1\n");
+    int pid1 = sthr_spawn(child1);
+    printf("Parent: Creating Child 2\n");
+    int pid2 = sthr_spawn(child2);
+    printf("Parent: Waiting for Child 1\n");
+    sthr_waitpid(pid1, &status);
+    printf("Parent: Child 1 exited with status %d\n", status);
+    printf("Parent: Waiting for Child 2\n");
+    sthr_waitpid(pid2, &status);
+    printf("Parent: Child 2 exited with status %d\n", status);
+    sthr_exit(0);
 }
 
 int main() {
-    // Initialize the sthread library with the child_process function
-    sthr_init(child_process);
-
-    // Spawn another child process
-    int child_pid = sthr_spawn(child_process);
-    if (child_pid != -1) {
-        printf("Spawned child process with PID: %d\n", child_pid);
-    } else {
-        fprintf(stderr, "Failed to spawn child process\n");
-        return EXIT_FAILURE;
-    }
-
-    // Yield the CPU to the child processes
-    sthr_yield();
-    printf("Main process resumed after yielding to child processes\n");
-
-    // Wait for the child process to finish
-    int status;
-    if (sthr_waitpid(child_pid, &status) == 0) {
-        printf("Child process with PID %d exited with status %d\n", child_pid, status);
-    } else {
-        fprintf(stderr, "Failed to wait for child process\n");
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+    sthr_init(parent);
+    return 0;
 }
