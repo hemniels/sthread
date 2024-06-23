@@ -3,3 +3,4 @@ sthread.pdf
 datastruct/sthread.h
 tests/sthreadtest.c
 datastruct/datalogger.c
+main.c

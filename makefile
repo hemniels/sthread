@@ -1,14 +1,25 @@
-CC = gcc
-CFLAGS = -Wall -g
-SRC_DIR = datastruct
-TEST_DIR = tests
-BUILD_DIR = build
+CC=gcc
+CFLAGS=-Wall -g
 
-all: $(BUILD_DIR)/test_scheduler
+# List of source files
+SRCS=main.c scheduler/sthread.c
 
-$(BUILD_DIR)/test_scheduler: $(TEST_DIR)/test_scheduler.c $(SRC_DIR)/sthread.c
-	mkdir -p $(BUILD_DIR)
+# List of object files
+OBJS=$(SRCS:.c=.o)
+
+# Output executable
+EXECUTABLE=main
+
+# Main target
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
+# Rule to compile .c files into .o files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean rule
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -f $(OBJS) $(EXECUTABLE)
