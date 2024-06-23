@@ -1,36 +1,39 @@
-#include "../datastruct/dll.h"
 #include "../datastruct/sthread.h"
-#include <assert.h>
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+
+void child_process() {
+    printf("Child process is running!\n");
+    sthr_yield();
+    printf("Child process resumed after yield!\n");
+    sthr_exit(EXIT_SUCCESS);
+}
 
 int main() {
-    printf("Running tests for Process Queue...\n");
-    DoublyLinkedList* queue = create_doubly_linked_list();
-    printf("list created");
-    Process p1 = {1, "Process 1"};
-    Process p2 = {2, "Process 2"};
-    Process p3 = {3, "Process 3"};
+    // Initialize the sthread library with the child_process function
+    sthr_init(child_process);
 
-    printf("Enqueuing processes");
-    enqueue_process(queue, p1);
-    enqueue_process(queue, p2);
-    enqueue_process(queue, p3);
+    // Spawn another child process
+    int child_pid = sthr_spawn(child_process);
+    if (child_pid != -1) {
+        printf("Spawned child process with PID: %d\n", child_pid);
+    } else {
+        fprintf(stderr, "Failed to spawn child process\n");
+        return EXIT_FAILURE;
+    }
 
-    print_process_queue(queue);
-    
-    Process p = dequeue_process(queue);
-    assert(p.pid == 1);
-    assert(strcmp(p.name, "Process 1") == 0);
+    // Yield the CPU to the child processes
+    sthr_yield();
+    printf("Main process resumed after yielding to child processes\n");
 
-    print_process_queue(queue);
+    // Wait for the child process to finish
+    int status;
+    if (sthr_waitpid(child_pid, &status) == 0) {
+        printf("Child process with PID %d exited with status %d\n", child_pid, status);
+    } else {
+        fprintf(stderr, "Failed to wait for child process\n");
+        return EXIT_FAILURE;
+    }
 
-    p = peek_process(queue);
-    assert(p.pid == 2);
-    assert(strcmp(p.name, "Process 2") == 0);
-
-    destroy_doubly_linked_list(queue);
-
-    printf("All tests passed!\n");
-    return 0;
+    return EXIT_SUCCESS;
 }

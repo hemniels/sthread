@@ -4,9 +4,9 @@ SRC_DIR = datastruct
 TEST_DIR = tests
 BUILD_DIR = build
 
-all: $(BUILD_DIR)/test_procqueue
+all: $(BUILD_DIR)/test_sthread
 
-$(BUILD_DIR)/test_procqueue: $(TEST_DIR)/test_procqueue.c $(SRC_DIR)/procqueue.c $(SRC_DIR)/dll.c
+$(BUILD_DIR)/test_sthread: $(TEST_DIR)/test_sthread.c $(SRC_DIR)/sthread.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -o $@ $^
 

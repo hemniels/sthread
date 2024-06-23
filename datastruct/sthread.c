@@ -1,56 +1,62 @@
-#include "procqueue.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "sthread.h"
 
-void enqueue_process(DoublyLinkedList* queue, Process process) {
-    Node* new_node = (Node*)malloc(sizeof(Node));
-    new_node->data = malloc(sizeof(Process));
-    memcpy(new_node->data, &process, sizeof(Process));
-    new_node->prev = queue->tail;
-    new_node->next = NULL;
-    if (queue->tail != NULL) {
-        queue->tail->next = new_node;
-    } else {
-        queue->head = new_node;
+#define STACK_SIZE 8192
+
+static ucontext_t main_context;
+static ucontext_t thread_context;
+static sthr_proc_func thread_func = NULL;
+
+static void thread_start() {
+    if (thread_func) {
+        thread_func();
+        sthr_exit(EXIT_SUCCESS);
     }
-    queue->tail = new_node;
-    queue->size++;
 }
 
-Process dequeue_process(DoublyLinkedList* queue) {
-    if (queue->head == NULL) {
-        fprintf(stderr, "Queue is empty\n");
-        exit(EXIT_FAILURE);
-    }
-    Node* node = queue->head;
-    Process process = *(Process*)node->data;
-    queue->head = node->next;
-    if (queue->head != NULL) {
-        queue->head->prev = NULL;
-    } else {
-        queue->tail = NULL;
-    }
-    free(node->data);
-    free(node);
-    queue->size--;
-    return process;
+int sthr_spawn(sthr_proc_func f) {
+    getcontext(&thread_context);
+    thread_func = f;
+    thread_context.uc_stack.ss_sp = malloc(STACK_SIZE);
+    thread_context.uc_stack.ss_size = STACK_SIZE;
+    thread_context.uc_link = &main_context;
+    makecontext(&thread_context, thread_start, 0);
+
+    swapcontext(&main_context, &thread_context);
+
+    return 0; // Return child process ID if needed
 }
 
-Process peek_process(DoublyLinkedList* queue) {
-    if (queue->head == NULL) {
-        fprintf(stderr, "Queue is empty\n");
-        exit(EXIT_FAILURE);
-    }
-    return *(Process*)queue->head->data;
+void sthr_yield() {
+    swapcontext(&thread_context, &main_context);
 }
 
-void print_process_queue(DoublyLinkedList* queue) {
-    Node* current = queue->head;
-    while (current != NULL) {
-        Process* process = (Process*)current->data;
-        printf("Process ID: %d, Name: %s\n", process->pid, process->name);
-        current = current->next;
-    }
-    printf("\n");
+void sthr_exit(int status) {
+    if (thread_context.uc_stack.ss_sp)
+        free(thread_context.uc_stack.ss_sp);
+    thread_func = NULL;
+    setcontext(&main_context);
+}
+
+ssize_t sthr_read(int fd, void *buf, size_t count) {
+    // Implement read functionality
+    return read(fd, buf, count);
+}
+
+int sthr_waitpid(int cpid, int *status) {
+    // Implement waitpid functionality
+    return waitpid(cpid, status, 0);
+}
+
+void sthr_init(sthr_proc_func f) {
+    thread_func = f;
+    getcontext(&main_context);
+    sthr_spawn(f);
+}
+
+int sthr_getpid() {
+    return getpid();
+}
+
+int sthr_getppid() {
+    return getppid();
 }
