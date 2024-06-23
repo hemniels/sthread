@@ -1,5 +1,28 @@
-## Non Preemptive Scheduling in C using FCFS Algorithm
-Project just initialized trying to achieve the following:
-    - Implement DLL Data Struct for Processes
-    - Using a Scheduling Algorithm to implement 3 Queues
-    - Efficient use of Scheduling functions as well as zombie hunting
+# Non-Preemptive Scheduler Project
+
+This project implements a non-preemptive scheduler in C.
+
+## Project Structure
+
+- `build/`: Compiled objects and binaries.
+- `datastruct/`: Data structure implementations.
+  - `dll.c`, `dll.h`: Doubly linked list implementation.
+  - `processlist.c`, `processlist.h`: Process list implementation.
+- `include/`: Header files.
+  - `main.h`: Main header file.
+  - `scheduler.h`: Scheduler header file.
+- `scheduler/`: Scheduler implementation.
+  - `scheduler.c`, `scheduler.h`: Scheduler source and header files.
+- `tests/`: Test files for the components.
+  - `test_dll.c`: Tests for the doubly linked list.
+  - `test_processlist.c`: Tests for the process list.
+  - `test_scheduler.c`: Tests for the scheduler.
+- `compile.sh`: Script to compile the project.
+- `main.c`: Entry point of the application.
+- `readme.md`: Project documentation.
+
+## Build Instructions
+
+To build the project, run the following command:
+```sh
+./compile.sh
