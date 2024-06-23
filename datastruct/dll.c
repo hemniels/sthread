@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Erstellen einer neuen Liste
 DoublyLinkedList* create_doubly_linked_list() {
     DoublyLinkedList* list = (DoublyLinkedList*)malloc(sizeof(DoublyLinkedList));
     list->head = NULL;
@@ -11,7 +10,6 @@ DoublyLinkedList* create_doubly_linked_list() {
     return list;
 }
 
-// Einfügen eines Knotens am Anfang der Liste
 void insert_at_head(DoublyLinkedList* list, int data) {
     Node* new_node = (Node*)malloc(sizeof(Node));
     new_node->data = data;
@@ -26,7 +24,6 @@ void insert_at_head(DoublyLinkedList* list, int data) {
     list->size++;
 }
 
-// Einfügen eines Knotens am Ende der Liste
 void insert_at_tail(DoublyLinkedList* list, int data) {
     Node* new_node = (Node*)malloc(sizeof(Node));
     new_node->data = data;
@@ -41,7 +38,6 @@ void insert_at_tail(DoublyLinkedList* list, int data) {
     list->size++;
 }
 
-// Löschen eines Knotens
 void delete_node(DoublyLinkedList* list, Node* node) {
     if (node->prev != NULL) {
         node->prev->next = node->next;
@@ -57,7 +53,6 @@ void delete_node(DoublyLinkedList* list, Node* node) {
     list->size--;
 }
 
-// Zerstören der Liste
 void destroy_doubly_linked_list(DoublyLinkedList* list) {
     Node* current = list->head;
     while (current != NULL) {
@@ -68,7 +63,6 @@ void destroy_doubly_linked_list(DoublyLinkedList* list) {
     free(list);
 }
 
-// Drucken der Liste
 void print_list(DoublyLinkedList* list) {
     Node* current = list->head;
     while (current != NULL) {

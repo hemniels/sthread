@@ -7,7 +7,7 @@ This project implements a non-preemptive scheduler in C.
 - `build/`: Compiled objects and binaries.
 - `datastruct/`: Data structure implementations.
   - `dll.c`, `dll.h`: Doubly linked list implementation.
-  - `processlist.c`, `processlist.h`: Process list implementation.
+  - `sthread.c`, `sthread.h`: Thread implementation.
 - `include/`: Header files.
   - `main.h`: Main header file.
   - `scheduler.h`: Scheduler header file.
@@ -15,7 +15,7 @@ This project implements a non-preemptive scheduler in C.
   - `scheduler.c`, `scheduler.h`: Scheduler source and header files.
 - `tests/`: Test files for the components.
   - `test_dll.c`: Tests for the doubly linked list.
-  - `test_processlist.c`: Tests for the process list.
+  - `test_sthread.c`: Tests for the process list.
   - `test_scheduler.c`: Tests for the scheduler.
 - `compile.sh`: Script to compile the project.
 - `main.c`: Entry point of the application.

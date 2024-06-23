@@ -5,17 +5,8 @@
 
 void enqueue_process(DoublyLinkedList* queue, Process process) {
     Node* new_node = (Node*)malloc(sizeof(Node));
-    if (new_node == NULL) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(EXIT_FAILURE);
-    }
-    void* data = malloc(sizeof(Process));
-    if (data == NULL) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(EXIT_FAILURE);
-    }
-    memcpy(data, &process, sizeof(Process));
-    new_node->data = data;
+    new_node->data = malloc(sizeof(Process));
+    memcpy(new_node->data, &process, sizeof(Process));
     new_node->prev = queue->tail;
     new_node->next = NULL;
     if (queue->tail != NULL) {
